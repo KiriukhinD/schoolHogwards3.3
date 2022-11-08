@@ -34,7 +34,7 @@ public class FacultyService {
 
 
     public Collection<Faculty> findByColor(String color) {
-        return positionRepositoryFaculty.findAll();
+        return positionRepositoryFaculty.findByColor(color);
     }
 
 
