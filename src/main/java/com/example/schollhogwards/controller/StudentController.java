@@ -18,37 +18,43 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @PostMapping
+    @PostMapping//POST  http://localhost:8080/student
     public Student create(@RequestBody Student student) {
         return studentService.create(student);
 
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}")//GET
     public Student read(@PathVariable long id) {
         return studentService.read(id);
 
 
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Student> update(@RequestBody long id, Student student) {
-        Student foundBook = studentService.update(student);
-        if (foundBook == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(foundBook);
+    @PutMapping("/{id}")//PUT
+    public ResponseEntity<Student> update(@RequestBody Student student) {
+        return ResponseEntity.ok(studentService.update(student));
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")//DELETE
     public void delete(@PathVariable long id) {
         studentService.delete(id);
 
     }
 
     @GetMapping
-    public Collection<Student> findByAge(@RequestParam int age) {
-        return studentService.findByAge(age);
+    public Collection<Student> finBydAllStudents() {
+        return studentService.getAll();
+    }
+
+    @GetMapping("/age")
+    public Collection<Student> getAgeStudent(int age) {
+        return studentService.getAgeStudent(age);
+    }
+
+    @GetMapping("/minMax")
+    public Collection<Student> findMinMax(int age, int age2) {
+        return studentService.findMinMax(age, age2);
     }
 }

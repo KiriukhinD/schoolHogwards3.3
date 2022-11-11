@@ -1,42 +1,47 @@
 package com.example.schollhogwards.service;
 
 import com.example.schollhogwards.model.Student;
-import com.example.schollhogwards.repository.PositionRepositoryStudent;
+import com.example.schollhogwards.repository.RepositoryStudent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
-
 @Service
 public class StudentService {
-    private final PositionRepositoryStudent positionRepositoryStudent;
+    private final RepositoryStudent repositoryStudent;
 
-    public StudentService(PositionRepositoryStudent positionRepositoryStudent) {
-        this.positionRepositoryStudent = positionRepositoryStudent;
+    public StudentService(RepositoryStudent repositoryStudent) {
+        this.repositoryStudent = repositoryStudent;
     }
 
     public Student create(Student student) {
-        return positionRepositoryStudent.save(student);
+        return repositoryStudent.save(student);
     }
 
     public Student read(long id) {
-        return positionRepositoryStudent.findById(id).get();
+        return repositoryStudent.findById(id).get();
     }
 
     public Student update(Student student) {
-        return positionRepositoryStudent.save(student);
+        return repositoryStudent.save(student);
     }
 
     public ResponseEntity delete(long id) {
-        positionRepositoryStudent.deleteById(id);
+        repositoryStudent.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
-
-    public Collection<Student> findByAge(int age) {
-        return positionRepositoryStudent.findStudentByAge(age);
+    public Collection<Student> getAll() {
+        return repositoryStudent.findAll();
     }
 
+    public Collection<Student> getAgeStudent(int age) {
+        return repositoryStudent.findByAge(age);
+    }
+
+    public Collection<Student> findMinMax(int age, int age2) {
+        return repositoryStudent.findByAgeBetween(age, age2);
+    }
 
 }
