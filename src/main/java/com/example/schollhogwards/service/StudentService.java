@@ -44,4 +44,8 @@ public class StudentService {
         return repositoryStudent.findByAgeBetween(age, age2);
     }
 
+    public Collection<Student> getAllStudentsFaculty(String name) {
+        return repositoryStudent.findStudentByName(name);
+    }
+
 }

@@ -57,4 +57,12 @@ public class StudentController {
     public Collection<Student> findMinMax(int age, int age2) {
         return studentService.findMinMax(age, age2);
     }
+
+    @GetMapping("/studentFaculty")
+    public Collection<Student> getStudentFaculty(String name) {
+        return studentService.getAllStudentsFaculty(name);
+    }
+
+
 }
+

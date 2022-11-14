@@ -1,5 +1,7 @@
 package com.example.schollhogwards.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -14,8 +16,10 @@ public class Faculty {
     @Id
     @GeneratedValue
     private long id;
+    @JsonIgnore
     @OneToMany(mappedBy = "faculty")
     private Collection<Student> students;
+
 
     public String getName() {
         return name;
@@ -60,21 +64,13 @@ public class Faculty {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Faculty faculty = (Faculty) o;
-        return id == faculty.id && Objects.equals(name, faculty.name) && Objects.equals(color, faculty.color) && Objects.equals(students, faculty.students);
+        return id == faculty.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, color, id, students);
+        return Objects.hash(id);
     }
 
-    @Override
-    public String toString() {
-        return "Faculty{" +
-                "name='" + name + '\'' +
-                ", color='" + color + '\'' +
-                ", id=" + id +
-                ", students=" + students +
-                '}';
-    }
+
 }

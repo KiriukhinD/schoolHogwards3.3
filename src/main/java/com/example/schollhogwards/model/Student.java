@@ -1,6 +1,9 @@
 package com.example.schollhogwards.model;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.util.Objects;
 
 @Entity
@@ -10,9 +13,11 @@ public class Student {
     @Id
     @GeneratedValue
     private long id;
+    // @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "students_id")
     private Faculty faculty;
+
+
     public String getName() {
         return name;
     }
@@ -56,23 +61,11 @@ public class Student {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return age == student.age && id == student.id && Objects.equals(name, student.name) && Objects.equals(faculty, student.faculty);
+        return id == student.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, age, id, faculty);
+        return Objects.hash(id);
     }
-
-    @Override
-    public String toString() {
-        return "Student{" +
-                "name='" + name + '\'' +
-                ", age=" + age +
-                ", id=" + id +
-                ", faculty=" + faculty +
-                '}';
-    }
-
-
 }
