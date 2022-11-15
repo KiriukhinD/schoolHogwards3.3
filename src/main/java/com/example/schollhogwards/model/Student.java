@@ -1,22 +1,21 @@
 package com.example.schollhogwards.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 public class Student {
-    private String name;
-    private int age;
     @Id
     @GeneratedValue
     private long id;
-    // @JsonIgnore
+    private String name;
+    private int age;
+    @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "nameStudent_id")
     private Faculty faculty;
-
 
     public String getName() {
         return name;
@@ -24,7 +23,6 @@ public class Student {
 
     public void setName(String name) {
         this.name = name;
-
     }
 
     public int getAge() {

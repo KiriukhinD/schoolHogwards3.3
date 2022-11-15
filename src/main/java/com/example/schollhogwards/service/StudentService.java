@@ -1,11 +1,13 @@
 package com.example.schollhogwards.service;
 
+import com.example.schollhogwards.entity.StudentParam;
 import com.example.schollhogwards.model.Student;
 import com.example.schollhogwards.repository.RepositoryStudent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class StudentService {
@@ -44,8 +46,14 @@ public class StudentService {
         return repositoryStudent.findByAgeBetween(age, age2);
     }
 
-    public Collection<Student> getAllStudentsFaculty(String name) {
-        return repositoryStudent.findStudentByName(name);
+    public List<StudentParam> getSum(long id) {
+        return repositoryStudent.findStudentById(id);
+
     }
+
+    public Collection<Student> getStudentFaculty(long id) {
+        return repositoryStudent.findByFacultyId(id);
+    }
+
 
 }

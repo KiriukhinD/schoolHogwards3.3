@@ -58,4 +58,9 @@ public class FacultyController {
         return facultyService.getAll();
     }
 
+    @GetMapping("/facultyStudent")
+    public Collection<Faculty> getFacultyStudent(long id) {
+        return facultyService.getFacultyStudent(id);
+    }
+
 }

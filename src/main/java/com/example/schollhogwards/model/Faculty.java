@@ -11,7 +11,7 @@ import java.util.Objects;
 
 @Entity
 public class Faculty {
-    private String name;
+    private String nameFaculty;
     private String color;
     @Id
     @GeneratedValue
@@ -21,12 +21,12 @@ public class Faculty {
     private Collection<Student> students;
 
 
-    public String getName() {
-        return name;
+    public String getNameFaculty() {
+        return nameFaculty;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNameFaculty(String name) {
+        this.nameFaculty = name;
 
     }
 

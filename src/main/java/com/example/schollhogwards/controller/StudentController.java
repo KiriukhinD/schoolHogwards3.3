@@ -1,11 +1,13 @@
 package com.example.schollhogwards.controller;
 
+import com.example.schollhogwards.entity.StudentParam;
 import com.example.schollhogwards.model.Student;
 import com.example.schollhogwards.service.StudentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 
 
 @RestController
@@ -58,11 +60,16 @@ public class StudentController {
         return studentService.findMinMax(age, age2);
     }
 
-    @GetMapping("/studentFaculty")
-    public Collection<Student> getStudentFaculty(String name) {
-        return studentService.getAllStudentsFaculty(name);
+
+    @GetMapping("/sum")
+    public List<StudentParam> getSum(long id) {
+        return studentService.getSum(id);
     }
 
+    @GetMapping("/facultyStudent")
+    public Collection<Student> getStudentFaculty(long id) {
+        return studentService.getStudentFaculty(id);
+    }
 
 }
 

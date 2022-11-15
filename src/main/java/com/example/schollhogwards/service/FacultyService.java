@@ -34,10 +34,14 @@ public class FacultyService {
 
 
     public Collection<Faculty> findByNameOrColor(String name, String color) {
-        return repositoryFaculty.findByNameIgnoreCaseOrColorIgnoreCase(name, color);
+        return repositoryFaculty.findByNameFacultyIgnoreCaseOrColorIgnoreCase(name, color);
     }
 
     public Collection<Faculty> getAll() {
         return repositoryFaculty.findAll();
+    }
+
+    public Collection<Faculty> getFacultyStudent(long id) {
+        return repositoryFaculty.findByStudentsId(id);
     }
 }
