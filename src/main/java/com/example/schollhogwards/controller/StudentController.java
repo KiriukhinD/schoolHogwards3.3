@@ -1,13 +1,23 @@
 package com.example.schollhogwards.controller;
 
-import com.example.schollhogwards.entity.StudentParam;
+import com.example.schollhogwards.model.Avatar;
 import com.example.schollhogwards.model.Student;
 import com.example.schollhogwards.service.StudentService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 
 @RestController
@@ -20,55 +30,78 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @PostMapping//POST  http://localhost:8080/student
-    public Student create(@RequestBody Student student) {
-        return studentService.create(student);
-
-    }
-
-    @GetMapping("/{id}")//GET
-    public Student read(@PathVariable long id) {
-        return studentService.read(id);
-
-
-    }
-
-    @PutMapping("/{id}")//PUT
-    public ResponseEntity<Student> update(@RequestBody Student student) {
-        return ResponseEntity.ok(studentService.update(student));
-    }
-
-
-    @DeleteMapping("/{id}")//DELETE
-    public void delete(@PathVariable long id) {
-        studentService.delete(id);
-
+    @GetMapping("{id}")
+    public ResponseEntity<Student> getStudentInfo(@PathVariable Long id) {
+        Student student = studentService.findStudent(id);
+        if (student == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(student);
     }
 
     @GetMapping
-    public Collection<Student> finBydAllStudents() {
-        return studentService.getAll();
+    public ResponseEntity<Collection<Student>> findStudents(@RequestParam(required = false) int age) {
+        if (age > 0) {
+            return ResponseEntity.ok(studentService.findByAge(age));
+        }
+        return ResponseEntity.ok(Collections.emptyList());
     }
 
-    @GetMapping("/age")
-    public Collection<Student> getAgeStudent(int age) {
-        return studentService.getAgeStudent(age);
+    @PostMapping
+    public Student createStudent(@RequestBody Student student) {
+        return studentService.addStudent(student);
     }
 
-    @GetMapping("/minMax")
-    public Collection<Student> findMinMax(int age, int age2) {
-        return studentService.findMinMax(age, age2);
+    @PutMapping
+    public ResponseEntity<Student> editStudent(@RequestBody Student student) {
+        Student foundStudent = studentService.editStudent(student);
+        if (foundStudent == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        return ResponseEntity.ok(foundStudent);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
+        studentService.deleteStudent(id);
+        return ResponseEntity.ok().build();
     }
 
 
-    @GetMapping("/sum")
-    public List<StudentParam> getSum(long id) {
-        return studentService.getSum(id);
+    @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadAvatar(@PathVariable Long id, @RequestParam MultipartFile avatar) throws IOException {
+        if (avatar.getSize() > 1024 * 300) {
+            return ResponseEntity.badRequest().body("File is too big");
+        }
+
+        studentService.uploadAvatar(id, avatar);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/facultyStudent")
-    public Collection<Student> getStudentFaculty(long id) {
-        return studentService.getStudentFaculty(id);
+    @GetMapping(value = "/{id}/avatar/preview")
+    public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long id) {
+        Avatar avatar = studentService.findAvatar(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
+        headers.setContentLength(avatar.getData().length);
+
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
+    }
+
+    @GetMapping(value = "/{id}/avatar")
+    public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException {
+        Avatar avatar = studentService.findAvatar(id);
+
+        Path path = Path.of(avatar.getFilePath());
+
+        try (InputStream is = Files.newInputStream(path);
+             OutputStream os = response.getOutputStream();) {
+            response.setStatus(200);
+            response.setContentType(avatar.getMediaType());
+            response.setContentLength((int) avatar.getFileSize());
+            is.transferTo(os);
+        }
     }
 
 }

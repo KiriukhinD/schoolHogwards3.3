@@ -1,59 +1,86 @@
 package com.example.schollhogwards.service;
 
-import com.example.schollhogwards.entity.StudentParam;
+import com.example.schollhogwards.model.Avatar;
 import com.example.schollhogwards.model.Student;
-import com.example.schollhogwards.repository.RepositoryStudent;
-import org.springframework.http.ResponseEntity;
+import com.example.schollhogwards.repository.AvatarRepository;
+import com.example.schollhogwards.repository.StudentRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
-import java.util.List;
+
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
+@Transactional
 public class StudentService {
-    private final RepositoryStudent repositoryStudent;
 
-    public StudentService(RepositoryStudent repositoryStudent) {
-        this.repositoryStudent = repositoryStudent;
+    private final StudentRepository studentRepository;
+    private final AvatarRepository avatarRepository;
+    @Value("${avatars.dir.path}")
+    private String avatarsDir;
+
+    public StudentService(StudentRepository studentRepository, AvatarRepository avatarRepository) {
+        this.studentRepository = studentRepository;
+        this.avatarRepository = avatarRepository;
     }
 
-    public Student create(Student student) {
-        return repositoryStudent.save(student);
+    public Student addStudent(Student student) {
+        student.setId(null);
+        return studentRepository.save(student);
     }
 
-    public Student read(long id) {
-        return repositoryStudent.findById(id).get();
+    public Student findStudent(long id) {
+        return studentRepository.findById(id).orElseThrow();
     }
 
-    public Student update(Student student) {
-        return repositoryStudent.save(student);
+    public Student editStudent(Student student) {
+        return studentRepository.save(student);
     }
 
-    public ResponseEntity delete(long id) {
-        repositoryStudent.deleteById(id);
-        return ResponseEntity.ok().build();
+    public void deleteStudent(long id) {
+        studentRepository.deleteById(id);
     }
 
-    public Collection<Student> getAll() {
-        return repositoryStudent.findAll();
+    public Collection<Student> findByAge(int age) {
+        return studentRepository.findAllByAge(age);
     }
 
-    public Collection<Student> getAgeStudent(int age) {
-        return repositoryStudent.findByAge(age);
+    public Avatar findAvatar(long studentId) {
+        return avatarRepository.findByStudentId(studentId).orElseThrow();
     }
 
-    public Collection<Student> findMinMax(int age, int age2) {
-        return repositoryStudent.findByAgeBetween(age, age2);
+    public void uploadAvatar(Long studentId, MultipartFile file) throws IOException {
+        Student student = findStudent(studentId);
+
+        Path filePath = Path.of(avatarsDir, studentId + "." + getExtension(file.getOriginalFilename()));
+        Files.createDirectories(filePath.getParent());
+        Files.deleteIfExists(filePath);
+
+        try (InputStream is = file.getInputStream();
+             OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+             BufferedInputStream bis = new BufferedInputStream(is, 1024);
+             BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+        ) {
+            bis.transferTo(bos);
+        }
+
+        Avatar avatar = avatarRepository.findByStudentId(studentId).orElseGet(Avatar::new);
+        avatar.setStudent(student);
+        avatar.setFilePath(filePath.toString());
+        avatar.setFileSize(file.getSize());
+        avatar.setMediaType(file.getContentType());
+        avatar.setData(file.getBytes());
+        avatarRepository.save(avatar);
     }
 
-    public List<StudentParam> getSum(long id) {
-        return repositoryStudent.findStudentById(id);
-
+    private String getExtension(String fileName) {
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
-
-    public Collection<Student> getStudentFaculty(long id) {
-        return repositoryStudent.findByFacultyId(id);
-    }
-
 
 }

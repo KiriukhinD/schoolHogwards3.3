@@ -7,6 +7,8 @@ public interface StudentParam {
 
     //  Integer getAvg();
     String getName_Faculty();
+
+    Long getID();
 //  Integer getAge();
-    // String getNameFaculty();
+// String getNameFaculty();
 }
