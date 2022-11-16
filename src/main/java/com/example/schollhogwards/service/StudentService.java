@@ -22,7 +22,7 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
     private final AvatarRepository avatarRepository;
-    @Value("${avatars.dir.path}")
+    @Value("${path.to.avatars.folder}")
     private String avatarsDir;
 
     public StudentService(StudentRepository studentRepository, AvatarRepository avatarRepository) {

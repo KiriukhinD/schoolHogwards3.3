@@ -1,7 +1,8 @@
 package com.example.schollhogwards.service;
 
 import com.example.schollhogwards.model.Faculty;
-import com.example.schollhogwards.repository.RepositoryFaculty;
+import com.example.schollhogwards.model.Student;
+import com.example.schollhogwards.repository.facultyRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -9,39 +10,39 @@ import java.util.Collection;
 
 @Service
 public class FacultyService {
-    private final RepositoryFaculty repositoryFaculty;
+    private final facultyRepository facultyRepository;
 
-    public FacultyService(RepositoryFaculty repositoryFaculty) {
-        this.repositoryFaculty = repositoryFaculty;
+    public FacultyService(facultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
     }
 
     public Faculty create(Faculty faculty) {
-        return repositoryFaculty.save(faculty);
+        return facultyRepository.save(faculty);
     }
 
     public Faculty read(long id) {
-        return repositoryFaculty.findById(id).get();
+        return facultyRepository.findById(id).get();
     }
 
     public Faculty update(Faculty faculty) {
-        return repositoryFaculty.save(faculty);
+        return facultyRepository.save(faculty);
     }
 
     public ResponseEntity<Faculty> delete(long id) {
-        repositoryFaculty.deleteById(id);
+        facultyRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
 
     public Collection<Faculty> findByNameOrColor(String name, String color) {
-        return repositoryFaculty.findByNameFacultyIgnoreCaseOrColorIgnoreCase(name, color);
+        return facultyRepository.findByNameFacultyIgnoreCaseOrColorIgnoreCase(name, color);
     }
 
     public Collection<Faculty> getAll() {
-        return repositoryFaculty.findAll();
+        return facultyRepository.findAll();
     }
 
-    public Collection<Faculty> getFacultyStudent(long id) {
-        return repositoryFaculty.findByStudentsId(id);
+    public Collection<Student> getFacultyStudent(long id) {
+        return facultyRepository.findByStudentsId(id);
     }
 }

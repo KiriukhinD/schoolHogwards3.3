@@ -13,6 +13,7 @@ import java.util.Objects;
 public class Faculty {
     private String nameFaculty;
     private String color;
+
     @Id
     @GeneratedValue
     private long id;

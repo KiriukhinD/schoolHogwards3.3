@@ -2,6 +2,7 @@ package com.example.schollhogwards.controller;
 
 
 import com.example.schollhogwards.model.Faculty;
+import com.example.schollhogwards.model.Student;
 import com.example.schollhogwards.service.FacultyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -59,7 +60,7 @@ public class FacultyController {
     }
 
     @GetMapping("/facultyStudent")
-    public Collection<Faculty> getFacultyStudent(long id) {
+    public Collection<Student> getFacultyStudent(long id) {
         return facultyService.getFacultyStudent(id);
     }
 
